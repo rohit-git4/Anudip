@@ -1,0 +1,107 @@
+Schema for Library Management System
+
+
+//Creating database(library)
+mysql> create database library;
+
+//using library database
+mysql> use library;
+Database changed
+
+//creating table book
+mysql>create TABLE book(
+ -> Book_id varchar(50) PRIMARY KEY,
+ -> Category varchar(50),
+ -> Name varchar(50),
+ -> Authors varchar(50),
+ -> Copies int
+ -> );
+
+//describing book table
+ mysql> desc book;
++----------+-------------+------+-----+---------+-------+
+| Field    | Type        | Null | Key | Default | Extra |
++----------+-------------+------+-----+---------+-------+
+| Book_id  | varchar(50) | NO   | PRI | NULL    |       |
+| Category | varchar(50) | YES  |     | NULL    |       |
+| Name     | varchar(50) | YES  |     | NULL    |       |
+| Author   | varchar(50) | YES  |     | NULL    |       |
+| Copies   | int         | YES  |     | NULL    |       |
++----------+-------------+------+-----+---------+-------+
+
+//creating members table 
+mysql> CREATE TABLE members (
+    -> member_id varchar(50) PRIMARY KEY,
+    -> name VARCHAR(100) NOT NULL,
+    -> email VARCHAR(100) UNIQUE NOT NULL,
+    -> phone_number VARCHAR(15),
+    -> address VARCHAR(255),
+    -> date_joined DATE,
+    -> membership_type ENUM('Standard', 'Premium', 'Student') DEFAULT 'Standard',
+    -> membership_status ENUM('Active', 'Inactive', 'Suspended') DEFAULT 'Active'
+    -> );
+
+//describing members table
+mysql> desc members;
++-------------------+---------------------------------------+------+-----+----------+-------+
+| Field             | Type                                  | Null | Key | Default  | Extra |
++-------------------+---------------------------------------+------+-----+----------+-------+
+| member_id         | varchar(50)                           | NO   | PRI | NULL     |       |
+| name              | varchar(100)                          | NO   |     | NULL     |       |
+| email             | varchar(100)                          | NO   | UNI | NULL     |       |
+| phone_number      | varchar(15)                           | YES  |     | NULL     |       |
+| address           | varchar(255)                          | YES  |     | NULL     |       |
+| date_joined       | date                                  | YES  |     | NULL     |       |
+| membership_type   | enum('Standard','Premium','Student')  | YES  |     | Standard |       |
+| membership_status | enum('Active','Inactive','Suspended') | YES  |     | Active   |       |
++-------------------+---------------------------------------+------+-----+----------+-------+
+
+//creating reservations table
+mysql> CREATE TABLE reservations (
+    -> reservation_id INT AUTO_INCREMENT PRIMARY KEY,
+    -> member_id varchar(50),
+    -> Book_id varchar(50),
+    -> reservation_date DATE,
+    -> status ENUM('Reserved', 'Cancelled', 'Picked Up', 'Expired') DEFAULT 'Reserved',
+    -> FOREIGN KEY (member_id) REFERENCES members(member_id),
+    -> FOREIGN KEY (Book_id) REFERENCES book(Book_id)
+    -> );
+
+//describing members reservations
+mysql> DESC RESERVATIONS;
++------------------+----------------------------------------------------+------+-----+----------+----------------+
+| Field            | Type                                               | Null | Key | Default  | Extra          |
++------------------+----------------------------------------------------+------+-----+----------+----------------+
+| reservation_id   | int                                                | NO   | PRI | NULL     | auto_increment |
+| member_id        | varchar(50)                                        | YES  | MUL | NULL     |                |
+| Book_id          | varchar(50)                                        | YES  | MUL | NULL     |                |
+| reservation_date | date                                               | YES  |     | NULL     |                |
+| status           | enum('Reserved','Cancelled','Picked Up','Expired') | YES  |     | Reserved |                |
++------------------+----------------------------------------------------+------+-----+----------+----------------+
+
+//Creating TABLE transactions
+mysql> CREATE TABLE transactions (
+    -> member_id VARCHAR(50),
+    -> Book_id VARCHAR(50),
+    -> issue_date DATE,
+    -> return_date DATE,
+    -> due_date DATE,
+    -> status ENUM('Issued', 'Returned', 'Overdue', 'Lost') DEFAULT 'Issued',
+    -> fine_amount DECIMAL(10, 2) DEFAULT 0.00,
+    -> FOREIGN KEY (member_id) REFERENCES members(member_id),
+    -> FOREIGN KEY (Book_id) REFERENCES book(Book_id)
+    -> );
+
+//describing members transactions
+mysql> DESC TRANSACTIONS;
++-------------+--------------------------------------------+------+-----+---------+-------+
+| Field       | Type                                       | Null | Key | Default | Extra |
++-------------+--------------------------------------------+------+-----+---------+-------+
+| member_id   | varchar(50)                                | YES  | MUL | NULL    |       |
+| Book_id     | varchar(50)                                | YES  | MUL | NULL    |       |
+| issue_date  | date                                       | YES  |     | NULL    |       |
+| return_date | date                                       | YES  |     | NULL    |       |
+| due_date    | date                                       | YES  |     | NULL    |       |
+| status      | enum('Issued','Returned','Overdue','Lost') | YES  |     | Issued  |       |
+| fine_amount | decimal(10,2)                              | YES  |     | 0.00    |       |
++-------------+--------------------------------------------+------+-----+---------+-------+
